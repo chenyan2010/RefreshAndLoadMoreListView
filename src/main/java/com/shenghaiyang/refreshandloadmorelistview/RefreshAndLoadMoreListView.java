@@ -215,7 +215,7 @@ public class RefreshAndLoadMoreListView extends ListView implements AbsListView.
                             break;
                         case PULL_DOWN:
                             setHeaderViewTopPadding(top);
-                            if (offsetY > mHeaderHeight + 60 &&
+                            if (offsetY >= mHeaderHeight + 60 &&
                                     mScrollState == SCROLL_STATE_TOUCH_SCROLL) {
                                 state = PULL_TO_RELEASE;
                             }
@@ -223,7 +223,7 @@ public class RefreshAndLoadMoreListView extends ListView implements AbsListView.
                             break;
                         case PULL_TO_RELEASE:
                             setHeaderViewTopPadding(top);
-                            if (offsetY < mHeaderHeight + 60) {
+                            if (offsetY < mHeaderHeight + 60 && offsetY > 0) {
                                 state = PULL_DOWN;
                             } else if (offsetY <= 0) {
                                 state = NORMAL;
@@ -269,7 +269,11 @@ public class RefreshAndLoadMoreListView extends ListView implements AbsListView.
 
         switch (state) {
             case NORMAL:
-                setHeaderViewTopPadding(-mRefreshHeader.getMeasuredHeight());
+                if (-mRefreshHeader.getMeasuredHeight() <= mHeaderHeight) {
+                    setHeaderViewTopPadding(-mHeaderHeight);
+                } else {
+                    setHeaderViewTopPadding(-mRefreshHeader.getMeasuredHeight());
+                }
                 break;
             case PULL_DOWN:
                 mRefreshTitle.setText("下拉可以刷新");
